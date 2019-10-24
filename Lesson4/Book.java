@@ -62,7 +62,17 @@ public class Book {
         setTitle(title);
         setAuthor(author);
     }
-
+    public Book(String title, String author,boolean isAvaiable,boolean isForHome) {
+        setTitle(title);
+        setAuthor(author);
+        setAvaiable(isAvaiable);
+        setForHome(isForHome);
+    }
+    public Book(String title, String author,boolean isAvaiable) {
+        setTitle(title);
+        setAuthor(author);
+        setAvaiable(isAvaiable);
+    }
     public Book() {
     }
 
