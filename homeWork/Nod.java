@@ -1,4 +1,4 @@
-package homeWork;
+package homeProject.homeWork;
 // наибольший общий делитель НОД
 public class Nod {
     int num;
@@ -21,8 +21,8 @@ class NodTestDrive{
     public static void main(String[] args) {
         Nod nod1 =new Nod();
         Nod nod2 =new Nod();
-        nod1.num = -5;
-        nod2.num = 500;
+        nod1.num = -12;
+        nod2.num = 684;
         Nod.findNod(nod1.num,nod2.num);
 
     }
