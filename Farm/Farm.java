@@ -50,7 +50,8 @@ public class Farm {
         }
 
         System.out.println("Скотина померла, горе-фермеру осталось жить всего " + Math.abs(resources / farmer.spendResources()) + " дня");
-        System.out.println("Фермер продержался "+Main.getDaysOnFarm()+ Math.abs(resources / farmer.spendResources())+ " дней");
+        resources=Math.abs(resources / farmer.spendResources())+Main.getDaysOnFarm();
+        System.out.println("Фермер продержался "+ resources+ " дней");
         System.exit(0);
         return 0;
     }
