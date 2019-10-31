@@ -1,6 +1,10 @@
+import Animal.Pet;
+
 public interface HumansMethods {
     public int spendResources( );
-    public int feed(int heath,String name);
+    public Pet feed(Pet pet);
     public boolean goAway();
+    public Pet killForFood(Pet pet);
+
 
 }

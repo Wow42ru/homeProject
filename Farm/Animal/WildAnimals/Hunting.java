@@ -4,5 +4,5 @@ import Animal.Pet;
 import Animal.WildAnimal;
 
 public interface  Hunting {
-    public Pet hunt(Pet petWilBeEaten, boolean goAway, WildAnimal HauntinglyAnimal);
+    public Object hunt(Pet petWilBeEaten, boolean goAway, WildAnimal HauntinglyAnimal);
 }

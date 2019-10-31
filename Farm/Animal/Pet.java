@@ -1,10 +1,11 @@
 package Animal;
 
 public abstract class Pet extends Animal  {
-    private String name;
+
     private int health;
     private int resources ;
     private int dayTodayResources  = 0;
+    final  int  maxHealth;
 
     public void setDayTodayresources (int dayTodayResources ) {
         this.dayTodayResources  = dayTodayResources ;
@@ -17,7 +18,7 @@ public abstract class Pet extends Animal  {
     @Override
     public String toString() {
         return "Pets{" +
-                "name='" + name + '\'' +
+                "name='" + getName() + '\'' +
                 ", health=" + health +
                 ", resurs=" + resources  +
                 ", dayTodayResurs=" + dayTodayResources  +
@@ -29,21 +30,20 @@ public abstract class Pet extends Animal  {
         setName(name);
         setResources(health);
         setHealth(health);
+        maxHealth = (health);
     }
 
-    public String getName() {
-        return name;
-    }
 
-    private void setName(String name) {
-        this.name = name;
-    }
 
     public int getHealth() {
         return health;
     }
 
     public void setHealth(int health) {
+
+        if (health>=maxHealth){
+            return;
+        }
         this.health = health;
     }
 

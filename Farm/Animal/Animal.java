@@ -3,6 +3,16 @@ package Animal;
 public abstract class Animal {
     private int weight;
     private int speed;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    private String name;
     Animal(int weight,int speed){
         setSpeed(speed);
         setWeight(weight);

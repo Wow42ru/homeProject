@@ -1,7 +1,9 @@
+import Animal.Pet;
+
 public class Human   implements HumansMethods {
     private int health;
     private int eatForDay;
-    private int howMuchEat;
+    private int howMuchEat =3;
 
     @Override
     public int spendResources() {
@@ -9,18 +11,25 @@ public class Human   implements HumansMethods {
     }
 
     @Override
-    public int feed(int heath, String name) {
-        System.out.println("кормим " + name);
-        return 1+heath;
+    public Pet feed(Pet pet) {
+        System.out.println("кормим " + pet.getName());
+        pet.setHealth(pet.getHealth()+1);
+        return pet;
         // TODO: 28.10.2019 Добавить проверку на полноту здоровья 
     }
 
     @Override
     public boolean goAway() {
        double a= Math.random();
-       if (a>0.6)
-        return false;
+       if (a>0.6) {
+           return false;
+       }
         else return true;
-        // TODO: 29.10.2019 Можно сделать зависимость успеха от силы животоного
+    }
+
+    @Override
+    public Pet killForFood(Pet pet) {
+        System.out.println(pet.getName()+" прости нас... у фермера есть интерфейс.");
+        return null;
     }
 }
