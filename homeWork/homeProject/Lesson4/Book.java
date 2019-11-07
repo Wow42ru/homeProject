@@ -17,7 +17,8 @@ public class Book {
     // Свойста объекта (поля, атрибуты)
     private String author;// автор
     private String title;// название книги
-
+    private boolean isForHome;
+    private boolean isAvaiable;
     // Методы устанавливающей значения свойств title
     public void setTitle(String title) {
         if (title != null || !"".equals(title))
@@ -39,8 +40,7 @@ public class Book {
     }
 
     // Создали класс - сразу можем создавать объект этого класса
-    private boolean isForHome;
-    private boolean isAvaiable;
+
 
     public boolean getIsForHome() {
         return isForHome;
@@ -62,7 +62,6 @@ public class Book {
         setTitle(title);
         setAuthor(author);
     }
-
     public Book() {
     }
 

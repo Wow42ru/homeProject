@@ -4,11 +4,12 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class Library {
-    private Book[] books = new Book[10];
+    private homeProject.Lesson4.Book[] books = new homeProject.Lesson4.Book[10];
     private int FreePlace = 0;//-счетчик добавления книги в библеотеку
+
     // В библеотеку можно добавить одну книгу
     public void addBook(Book newBook) {
-        for (int i = 0; FreePlace < this.books.length-1; i++) {
+        for (int i = 0; FreePlace < this.books.length - 1; i++) {
             if (this.books[i] == null) {
                 this.books[i] = newBook;
                 FreePlace++;
@@ -19,7 +20,7 @@ public class Library {
     }
 
     public void addBook(Book... newBooks) {// Это перегруз метода, одинаковые названия, но разные аргументы
-     for (;FreePlace < newBooks.length;FreePlace++) {
+        for (; FreePlace < newBooks.length; FreePlace++) {
             for (int i = 0; i < this.books.length; i++) {
                 if (this.books[i] == null) {
                     this.books[i] = newBooks[FreePlace];
@@ -33,21 +34,30 @@ public class Library {
 
     }
 
-    public String getInfo(String title) {
-        Scanner scanner = new Scanner(System.in);
-        String nameOfBook = scanner.nextLine();
-        for (int i = 0; i < this.books.length; i++) {
-
+    public  String getInfo(Book bookTitle) {
+        for (int i = 0; i < FreePlace; i++) {
+        if (bookTitle.getTitle().equals(books[i].getTitle()))
+        return books[i].toString();
         }
-        String info = "";
-        return info;
+        return "Такой книги в библиотеке нет";
+    }
+    public Book takeHome(String title){
+        for (int i = 0; i < FreePlace; i++) {
+            if (title.equals(books[i].getTitle())&& books[i].getIsForHome()) {
+                books[i].setForHome(false);
+                books[i].setAvaiable(false);
+                return books[i];
+            }
+        }
+        return null;
     }
 
 
     @Override
     public String toString() {
-        return "Library{" +
+        return "homeProject.Lesson4.Library{" +
                 "books=" + Arrays.toString(books) +
                 '}';
     }
 }
+

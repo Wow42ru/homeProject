@@ -1,5 +1,6 @@
 package homeProject.Lesson4;
 
+
 public class Main {
     public static void main(String[] args) {
         Book java = new Book();// вызов конструктора
@@ -25,6 +26,9 @@ public class Main {
         library.addBook(cleanCode, forBeginners,headFirstJava,notforBeginners,javaLiblatyOfProf,javaRussian,effectiveJava);
         library.addBook(forBeginners7,forBeginners8,forBeginners9);
         System.out.println(library);
+        System.out.println( library.getInfo(java));
+        System.out.println(library.takeHome("Философия Java"));
+        System.out.println(library.takeHome("Руководство для начинающих"));
 
     }
 }
