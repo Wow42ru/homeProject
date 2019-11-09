@@ -39,6 +39,12 @@ public class Main {
         employeeList.sort(employeeComparatorFull);
         System.out.println(employeeList);
 
+        System.out.println("@@@@@@@@@@");
+        List<Employee> testComparable = new ArrayList<>(Employee.employeeGenerator(15));
+        System.out.println(testComparable);
+        Collections.sort(testComparable);//Можно перегрузить(?) метод сорт
+        System.out.println(testComparable);
+
 
     }
 }

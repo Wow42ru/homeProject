@@ -1,7 +1,7 @@
 package lesson11.task.Employee;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -11,7 +11,7 @@ import java.util.Objects;
 // имени и зарплете
 // имени, зарплете, возрасту и компании
 
-public class Employee {
+public class Employee implements Comparable<Employee>{
     private String name;
     private String company;
     private int salary;
@@ -101,4 +101,8 @@ public class Employee {
     }
 
 
+    @Override
+    public int compareTo(Employee o) {
+      return this.getName().compareTo(o.getName());//Проверка ещё одного способа сортировки
+    }
 }
