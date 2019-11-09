@@ -1,3 +1,5 @@
+package homeProject.TimeTraining;
+
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -10,8 +12,8 @@ public class First  {
 //DataTimeApi
    LocalTime time = LocalTime.of(14,20);
    public void KakayaSmena(LocalTime time){
-       LocalTime b= this.time.minusHours(time.ge;
-       System.out.println(b.toString());
+     //  LocalTime b= this.time.minusHours(time;
+      // System.out.println(b.toString());
    }
 
 }
