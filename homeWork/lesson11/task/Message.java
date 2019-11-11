@@ -1,9 +1,6 @@
 package lesson11.task;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 
 enum MessagePriority {
@@ -20,7 +17,7 @@ enum MessagePriority {
 }
 
 
-public class Message {
+public class Message implements Comparable<Message>{
     private int code;
     private  MessagePriority priority;
 
@@ -65,7 +62,7 @@ public class Message {
 
     @Override
     public String toString() {
-        return "Message{" +
+        return "\n"+"Message{ " +
                 "code=" + code +
                 ", priority=" + priority +
                 '}';
@@ -74,6 +71,11 @@ public class Message {
     public static void main(String[] args) {
         List<Message> messages = MessageGenerator.generate(34);
         System.out.println(messages);
+    }
+
+    @Override
+    public int compareTo(Message o) {
+      return Integer.compare(this.getCode(),o.getCode());
     }
 }
 
@@ -96,3 +98,4 @@ class MessageGenerator {
         return messages;
     }
 }
+

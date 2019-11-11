@@ -15,7 +15,7 @@ public class Human   implements HumansMethods {
         System.out.println("кормим " + pet.getName());
         pet.setHealth(pet.getHealth()+1);
         return pet;
-        // TODO: 28.10.2019 Добавить проверку на полноту здоровья 
+
     }
 
     @Override
