@@ -8,8 +8,8 @@ public class Main {
         Comparator<Employee> employeeComparatorNameAndSalary = employeeComparatorName.thenComparing(new EmployeeSalaryComporator());
         Comparator<Employee> employeeComparatorFull = employeeComparatorNameAndSalary.thenComparing(new EmployeeAgeComporator().thenComparing(new EmployeeSalaryComporator()));
 
-        List<Employee> employees = Employee.employeeGenerator(50);// не совсем понимаю, как это происходит Todo: Спросить
-//Лист же абстрактный, или тут неявно создаётся объект другого класса?
+        List<Employee> employees = Employee.employeeGenerator(50);// не совсем понимаю, как это происходит
+//Лист же абстрактный, или тут неявно создаётся объект другого класса? Разобрался, ссылочная переменная типа List, создаётся ArrayList
         TreeSet<Employee> employeeTreeSet = new TreeSet<>(employeeComparatorName);
         TreeSet<Employee> employeeTreeSet1 = new TreeSet<>(employeeComparatorNameAndSalary);
         TreeSet<Employee> employeeTreeSet2 = new TreeSet<>(employeeComparatorFull);
