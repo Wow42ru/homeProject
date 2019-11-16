@@ -58,7 +58,7 @@ public class WarandPieceHomeWork {
     }
 
     void addStringToGroup(String s) {// тут добавляю строки м хэшмапу по длине строк (2 задание)
-        for (String a : s.split("\\s*(\\s|,|!|\\.|-)\\s*")) {//делю по словам
+        for (String a : s.split("\\s*(\\s|\\W)\\s*")) {//делю по словам
             getIntegerArrayListHashMap().putIfAbsent(a.length(), new ArrayList<String>());//создание арайлиста в ячейке мапы
             getIntegerArrayListHashMap().get(a.length()).add(a);//добавление слова
         }
