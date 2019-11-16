@@ -1,5 +1,3 @@
-package lesson11.task;
-
 import java.util.*;
 
 

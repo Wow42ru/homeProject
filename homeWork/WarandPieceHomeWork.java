@@ -133,7 +133,7 @@ class TaskTest {
     public static void main(String[] args) throws IOException {
         WarandPieceHomeWork task2Strings = new WarandPieceHomeWork();
 
-        ClassLoader loader = MapLesson.class.getClassLoader();
+        ClassLoader loader = TaskTest.class.getClassLoader();
         File file = new File(loader.getResource("wp.txt").getFile());
         List<String> strings = Files.readAllLines(file.toPath());
 
