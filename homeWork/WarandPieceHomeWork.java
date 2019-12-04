@@ -2,14 +2,16 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class WarandPieceHomeWork {
     private String[] alfabet = new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
     private String allTextInside;//массив одной строкой
 
-   private HashMap<String, Integer> hashMap = new HashMap<>();// для сортировке по популярности <Слово, количесво встреч слова в тексте>
+    private HashMap<String, Integer> hashMap = new HashMap<>();// для сортировке по популярности <Слово, количесво встреч слова в тексте>
 
     private HashMap<Integer, ArrayList<String>> integerArrayListHashMap = new HashMap<>();//для сортировки по количеству букв в слове
 
@@ -131,7 +133,7 @@ public class WarandPieceHomeWork {
 
 class TaskTest {
     public static void main(String[] args) throws IOException {
-        WarandPieceHomeWork task2Strings = new WarandPieceHomeWork();
+       /* WarandPieceHomeWork task2Strings = new WarandPieceHomeWork();
 
         ClassLoader loader = TaskTest.class.getClassLoader();
         File file = new File(loader.getResource("wp.txt").getFile());
@@ -152,6 +154,18 @@ class TaskTest {
         // 4 задание
         task2Strings.addStringToHowOftenWithout(strings);// для поиска фраз достаточно проверить все комбинации из топ 10, но что-то не пошло
         // 5 задание
-        task2Strings.persentOfLetters(strings);
+        task2Strings.persentOfLetters(strings);*/
+        /*File file1 = new File("C:\\Users\\wow42\\IdeaProjects\\homeProject\\Resource\\wp.txt")
+        Map<String, Long> map = Files.lines(file1.toPath())
+                .parallel()
+                .map(line -> line.replaceAll("\\p{Punct}", " ").toLowerCase().trim())
+                .flatMap(line -> Arrays.stream(line.split(" ")))
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet()
+                .parallelStream()
+                .sorted((Comparator.comparing((entry1,entry2)->entry2,
+*/
+
+
     }
 }

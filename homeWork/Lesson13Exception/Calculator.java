@@ -15,8 +15,8 @@ import java.util.regex.Pattern;
 //  указан не тот оператор - выбрасывать другое исключение, в качестве оператора указан /, а второй операнд 0, либо n или m не целые числа - выбрасывать третий тип исключения.
 //  Необходимо написать свои классы исключений. Исключения должны быть проверяемыми (checked). Метод исключений getMessage() необходимо переопределить (реализация на Ваше усмотрение).
 public class Calculator {
-    private Scanner scanner = new Scanner(System.in);
-    private Pattern pattern = Pattern.compile("(\\d*\\.?\\,?\\d*)(.?)(\\d*\\.?\\,?\\d*)");//  [+\-\\*/]
+    private Scanner scanner = new Scanner(System.in).useDelimiter("\n");
+    private Pattern pattern = Pattern.compile("(\\d*\\.?\\,?\\d*)(.?)(\\d*\\.?\\,?\\d*$)");//  [+\-\\*/]
     private double a;
     private double b;
 
