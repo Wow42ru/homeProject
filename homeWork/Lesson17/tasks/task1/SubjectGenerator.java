@@ -22,7 +22,7 @@ public class SubjectGenerator {
     public static List<Student> studentGenerate(int students,int maxSubjects){
         List<Student> studentsList =new ArrayList<>();
         for (int i = 0; i <students ; i++) {
-            studentsList.add(new Student(String.valueOf(i),generate(maxSubjects)));
+            studentsList.add(new Student("Student "+ i,generate(maxSubjects)));
         }
     return studentsList;
     }
