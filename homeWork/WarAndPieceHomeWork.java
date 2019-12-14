@@ -2,13 +2,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-public class WarandPieceHomeWork {
-    private String[] alfabet = new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
+public class WarAndPieceHomeWork {
+    private String[] alphabet = new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
     private String allTextInside;//массив одной строкой
 
     private HashMap<String, Integer> hashMap = new HashMap<>();// для сортировке по популярности <Слово, количесво встреч слова в тексте>
@@ -16,7 +14,7 @@ public class WarandPieceHomeWork {
     private HashMap<Integer, ArrayList<String>> integerArrayListHashMap = new HashMap<>();//для сортировки по количеству букв в слове
 
     public void arrayToString(List<String> list) {
-        // TODO: 15.11.2019 сделать проверку на полноту массива финал?
+
         StringBuilder stringBuilder = new StringBuilder();
         for (String s : list) {
             stringBuilder.append(s.replaceAll("\\s+", " "));
@@ -108,7 +106,7 @@ public class WarandPieceHomeWork {
     public void persentOfLetters(List<String> strings) {
         arrayToString(strings);//Опять массив->строка
         HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
-        for (String c : alfabet) {
+        for (String c : alphabet) {
             stringIntegerHashMap.put(c, 0);//Создаём ячейку с ключём-буквой
             Matcher matcher = Pattern.compile(c, Pattern.CASE_INSENSITIVE).matcher(allTextInside);// почему-то не работало с отдельным (до цикла) обьяевлением паттерна
             while (matcher.find()) {//искал только "а"
@@ -120,12 +118,12 @@ public class WarandPieceHomeWork {
         for (int i : (stringIntegerHashMap.values())) {
             summ = summ + (long) i;
         }
-        Double[] doubles = new Double[alfabet.length];
-        for (int i = 0; i < alfabet.length; i++) {
-            doubles[i] = ((double) stringIntegerHashMap.get(alfabet[i]) * 100 / summ);
+        Double[] doubles = new Double[alphabet.length];
+        for (int i = 0; i < alphabet.length; i++) {
+            doubles[i] = ((double) stringIntegerHashMap.get(alphabet[i]) * 100 / summ);
         }
-        for (int i = 0; i < alfabet.length; i++) {
-            System.out.println(alfabet[i] + " " + doubles[i]);
+        for (int i = 0; i < alphabet.length; i++) {
+            System.out.println(alphabet[i] + " " + doubles[i]);
 
         }
     }
@@ -133,7 +131,7 @@ public class WarandPieceHomeWork {
 
 class TaskTest {
     public static void main(String[] args) throws IOException {
-       /* WarandPieceHomeWork task2Strings = new WarandPieceHomeWork();
+       WarAndPieceHomeWork task2Strings = new WarAndPieceHomeWork();
 
         ClassLoader loader = TaskTest.class.getClassLoader();
         File file = new File(loader.getResource("wp.txt").getFile());
@@ -154,7 +152,8 @@ class TaskTest {
         // 4 задание
         task2Strings.addStringToHowOftenWithout(strings);// для поиска фраз достаточно проверить все комбинации из топ 10, но что-то не пошло
         // 5 задание
-        task2Strings.persentOfLetters(strings);*/
+        task2Strings.persentOfLetters(strings);
+
         /*File file1 = new File("C:\\Users\\wow42\\IdeaProjects\\homeProject\\Resource\\wp.txt")
         Map<String, Long> map = Files.lines(file1.toPath())
                 .parallel()

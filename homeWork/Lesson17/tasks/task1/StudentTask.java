@@ -26,7 +26,7 @@ class Student {
         this.subjects = subjects;
     }
 
-    public static Map<String, List<Student>> findUniqueSubjects(List<Student> students) {
+    public static Map<String, Set<Student>> findUniqueSubjects(List<Student> students) {
 
        /* Collector<List<String>, List<String>, List<String>> toList = Collector.of(
                 ArrayList::new, // метод инициализации аккумулятора
@@ -75,8 +75,7 @@ class Student {
                 .collect(Collectors.toMap(o -> o,
                         s -> students.stream()
                                 .filter(stu -> stu.getSubjects().contains(s))
-                                .distinct()// не уверен, что необходимо
-                                .collect(Collectors.toList())));
+                                .collect(Collectors.toSet())));
 
     }
 

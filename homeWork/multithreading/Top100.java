@@ -74,7 +74,7 @@ class CountingThread implements Runnable {
     public void run() {
         Map<String, Integer> TempCountingMap = new HashMap<>();
         for (String strings : partStringList) {
-            for (String s : strings.split("[\\W\\s]")) {
+            for (String s : strings.split("[\\W\\s&&[^']]")) {
                 TempCountingMap.merge(s.toLowerCase(), 1, Integer::sum);
             }
         }
