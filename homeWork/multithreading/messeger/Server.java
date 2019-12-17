@@ -12,8 +12,12 @@ import java.util.concurrent.LinkedBlockingDeque;
 public class Server {
     private static LinkedBlockingDeque<Message> messages = new LinkedBlockingDeque();// хранит сообщения
     private static ConcurrentHashMap<Integer, Socket> clientSockets = new ConcurrentHashMap<>();// хранит id адреса клиентов
+    private static int counter = 0;
+public static int getId(Socket socket) throws IOException {
 
-
+    addClient(counter,socket);
+    return counter++;
+}
     public static LinkedBlockingDeque<Message> getMessages() {
         return messages;
     }
@@ -104,8 +108,8 @@ class ReaderThreadServer implements Runnable {
 
 class WriterThreadServer extends Thread {
     static private HashMap<Integer, ObjectOutputStream> objectOutputStreams = new HashMap<>();// хранит id + исходящий поток
-
     static public void addClient(int id, Socket socket) throws IOException {
+
         objectOutputStreams.put(id, new ObjectOutputStream(socket.getOutputStream()));// регистрируем нового получателя
     }
 
@@ -125,18 +129,18 @@ class WriterThreadServer extends Thread {
                     System.out.println("message::  " + message + "  " + message.getId());//// TODO: 14.12.2019
                     System.out.println("Deque " + Server.getMessages());//// TODO: 14.12.2019
                     objectOutputStreams.entrySet().stream().peek(s ->
-                            System.out.println("Do filtra "+s+" "+s.getKey())
+                            System.out.println("Do filtra " + s + " " + s.getKey())
                     )
                             .filter(s -> !s.getKey().equals(message.getId()))// убираем отправителя из получателей
                             .peek(s ->
-                                    System.out.println("Posle filtra "+s+" "+s.getKey())
-                            ) .forEach(s -> {
-                                try {
-                                    s.getValue().writeObject(message);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            });
+                                    System.out.println("Posle filtra " + s + " " + s.getKey())
+                            ).forEach(s -> {
+                        try {
+                            s.getValue().writeObject(message);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
                     objectOutputStreams.entrySet().stream()
                             .filter(s -> s.getKey() != message.getId())// убираем отправителя из получателей
                             .forEach(System.out::println);

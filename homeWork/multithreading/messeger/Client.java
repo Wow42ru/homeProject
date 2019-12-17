@@ -6,7 +6,6 @@ import java.io.*;
 import java.net.Socket;
 
 
-
 import java.util.Scanner;
 
 public class Client {
@@ -15,36 +14,48 @@ public class Client {
     private Scanner scanner = new Scanner(System.in);
     private String name;
     private Socket socket;
-    static private int counter;
-private int id;//плохое рещение, лучше пока не придумал
-    private Client(String name, MySocket socket) {
-        this.socket = socket;
-        this.name = name;
-        id= counter;
-        counter++;
+    private int id;
+
+    public Socket getSocket() {
+        return socket;
     }
 
-    private void sentMessage(ObjectOutputStream out, String name,Socket socket) throws IOException {
-        out.writeObject(new Message(name, scanner.nextLine(),id));//  Считывает сообщения с консоли и отправляет на сервер
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    private Client(String name, Socket socket) {
+        this.socket = socket;
+        this.name = name;
+        id=-1;
+    }
+
+    private void sentMessage(ObjectOutputStream out, String name, Socket socket) throws IOException {
+        out.writeObject(new Message(name, scanner.nextLine(), id));//  Считывает сообщения с консоли и отправляет на сервер
         out.flush();
     }
 
     public static void main(String[] args) {
 
         Client client = null;
-        MySocket socket = null;
+        Socket socket = null;
 
         try {
 
-            socket = new MySocket(HOST, PORT);//Создаём соединение
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-            out.flush();
-            new Thread(new ReaderThread(socket)).start();
+            socket = new Socket(HOST, PORT);//Создаём соединение
             client = new Client(" User1", socket);// Создаём клиента
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            Thread readerThread = new Thread(new ReaderThread(client));
+
+            readerThread.start();
             try {
                 System.out.println("Соединение запушенно, для Старта нажмите Enter");
                 while (true)
-                    client.sentMessage(out, client.name,socket);// вызываем метод отправки сообщений // TODO: 13.12.2019 доделать выход
+                    client.sentMessage(out, client.name, socket);// вызываем метод отправки сообщений // TODO: 13.12.2019 доделать выход
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -59,16 +70,21 @@ class ReaderThread implements Runnable {
     private Socket socket;
 
 
-    ReaderThread(Socket socket) {
-        this.socket = socket;
-    }
-    @Override
-    public void run() {
+    ReaderThread(Client client) {
+        this.socket = client.getSocket();
         try {
             input = new ObjectInputStream(socket.getInputStream());
+            client.setId((requestId(client, input)));
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    public int requestId(Client client, ObjectInputStream input) throws IOException {
+        return input.readInt();
+    }
+
+    @Override
+    public void run() {
         Message message = null;
         try {
             while (true) {
