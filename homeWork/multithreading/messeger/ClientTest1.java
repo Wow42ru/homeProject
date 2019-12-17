@@ -14,36 +14,46 @@ public class ClientTest1 {
     private Scanner scanner = new Scanner(System.in);
     private String name;
     private Socket socket;
-    static private int counter=1;
     private int id;
-    private ClientTest1(String name, MySocket socket) {
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    private ClientTest1(String name, Socket socket) {
         this.socket = socket;
         this.name = name;
-        id= counter;
-        counter++;
+        id=-1;
     }
 
     private void sentMessage(ObjectOutputStream out, String name, Socket socket) throws IOException {
-        System.out.println("Можно писать сообщение");
-        out.writeObject(new Message(name, scanner.nextLine(),id));//  Считывает сообщения с консоли и отправляет на сервер
+        out.writeObject(new Message(name, scanner.nextLine(), id));//  Считывает сообщения с консоли и отправляет на сервер
         out.flush();
     }
 
     public static void main(String[] args) {
 
-        ClientTest1 client = null;
-        MySocket socket = null;
-
         try {
 
-            socket = new MySocket(HOST, PORT);//Создаём соединение
+            Socket socket= new Socket(HOST, PORT);//Создаём соединение
+            ClientTest1 client = new ClientTest1(" User1", socket);// Создаём клиента
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
-            new Thread(new ReaderThread1(socket)).start();
-            client = new ClientTest1("Test User", socket);// Создаём клиента
+            Thread readerThread1 = new Thread(new ReaderThread1(client));
+            readerThread1.start();
+
             try {
+                System.out.println("Соединение запушенно, для Старта нажмите Enter");
                 while (true)
-                    client.sentMessage(out, client.name,socket);// вызываем метод отправки сообщений // TODO: 13.12.2019 доделать выход
+                    client.sentMessage(out, client.name, socket);// вызываем метод отправки сообщений // TODO: 13.12.2019 доделать выход
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -57,27 +67,28 @@ class ReaderThread1 implements Runnable {
     private ObjectInputStream input = null;
     private Socket socket;
 
-
-    ReaderThread1(Socket socket) {
-        this.socket = socket;
-
-        //поймал дедлок, решал проблему (нельзя открывать читающие потоки с двух сторон одновременно)
+    ReaderThread1(ClientTest1 client) {
+        this.socket = client.getSocket();
+        try {
+            input = new ObjectInputStream(socket.getInputStream());
+            client.setId((requestId(client, input)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public int requestId(ClientTest1 client, ObjectInputStream input) throws IOException {
+        return input.readInt();
     }
 
     @Override
     public void run() {
-        try {
-            input = new ObjectInputStream(socket.getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         Message message = null;
         try {
             while (true) {
                 message = (Message) input.readObject();
                 if (message == null)
                     continue;
-                System.out.println("Сообщение принято!" + message);
+                System.out.println(message);
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
