@@ -10,7 +10,6 @@ import java.util.concurrent.CountDownLatch;
 У одного причала может стоять один корабль*/
 public class Port {
 
-    public static CountDownLatch clear = new CountDownLatch(1);
 
     public static void main(String[] args) {
         CountDownLatch[] port = new CountDownLatch[4];
@@ -33,38 +32,47 @@ class ShipThread extends Thread {
         this.port = port;
     }
 
+    private void getPlace(CountDownLatch[] port, int a) {
+        port[a].countDown();
+        System.out.println("В порту " + a + " " + currentThread().getName());
+        try {
+            sleep(random.nextInt(5000));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Ушли из порта " + a);
+        port[a].countDown();
+        port[a] = new CountDownLatch(2);
+
+    }
+
     @Override
     public void run() {
-       loop: while (true) {
+        loop:
+        while (true) {
             int a = random.nextInt(4);
-            ifLoop: if (port[a].getCount() < 2) {
-                for (int i = 0; i < 4; i++) {
+            if (port[a].getCount() != 2) {
+                for (int i = 0; i < 3; i++) {
                     if (port[i].getCount() == 2) {
-                        a = i;//пытаюсь решить проблемму с пустующими пристанями.
-                        break ifLoop;// осталась проблема с
+                        getPlace(port, i);
+                        continue loop;
                     }
                 }
                 try {
-                    Port.clear.await();// блокирую по общей переменной (для всех)
-                    continue loop;
+                   port[a].await();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-            port[a].countDown();//заблокировали порт (условие в ifLoop)
-            System.out.println("В порту " + a);
-            try {
-                sleep(random.nextInt(5000));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
 
-            port[a].countDown();
-            Port.clear.countDown();
-            //пытаюсь обновить всё
-            System.out.println("Ушли из порта " + a);
-            port[a] = new CountDownLatch(2);
-           Port.clear = new CountDownLatch(1);//Обновляю общий "стоппер"
+            else {
+                getPlace(port, a);
+                try {
+                    sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
