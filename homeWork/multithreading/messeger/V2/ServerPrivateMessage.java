@@ -1,13 +1,11 @@
 package multithreading.messeger.V2;
 
 
-import multithreading.messeger.Client;
 import multithreading.messeger.Message;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -18,16 +16,21 @@ import java.util.concurrent.LinkedBlockingDeque;
 public class ServerPrivateMessage {
     private static LinkedBlockingDeque<Message> messages = new LinkedBlockingDeque();// хранит сообщения
     private static ConcurrentHashMap<Integer, Socket> clientSockets = new ConcurrentHashMap<>();// хранит id адреса клиентов
-    private static ArrayList <Integer> privateTalk;// TODO: 19.12.2019 добавить семофор в метод, outputStream нужен? // хранит приватные диалоги (клиентов)
+    private static ArrayList<Integer> privateTalk;// TODO: 19.12.2019 добавить семофор в метод // хранит приватные диалоги (клиентов)
     private static int counter = 0;// для назначения id
 
-    public static  int getPair(int id) {
-        if (id%2==0)
-        return privateTalk.get(id+1).getKey();
+    public static int getPair(int id) {
+        try {
+            if (id % 2 == 0)
+                return privateTalk.get(id + 1);
+            else return privateTalk.get(id - 1);
+        } catch (NullPointerException e) {
+        }
+        return -1;// на случай отсутствия пары
     }
 
-    public static void addPair(MyEntry<Integer, OutputStream> a, MyEntry<Integer, OutputStream> b) {
-        if (a.getKey() < b.getKey()) {// упорядочиваем по id
+    public static void addPair(int a, int b) {
+        if (a < b) {// упорядочиваем по id
             privateTalk.add(a);
             privateTalk.add(b);
         } else {
@@ -39,7 +42,7 @@ public class ServerPrivateMessage {
     public static void deletePair(int id) {
         int a = -1;// для проверки
         for (int i = 0; i < privateTalk.size(); i++) {
-            if (privateTalk.get(i).getKey().equals(id)) {
+            if (privateTalk.get(i).equals(id)) {
                 a = i;
                 break;
             }
@@ -173,50 +176,46 @@ class WriterThreadServer2 extends Thread {
         ServerPrivateMessage.addClient(id, socket);
     }
 
-    static private void addPair(int a, int b) {
-        try {
-            ServerPrivateMessage.addPair(new MyEntry<>(a, objectOutputStreams.get(a)), new MyEntry<>(b, objectOutputStreams.get(b)));
-        } catch (NullPointerException e) {
-            System.out.println("Такого пользователя не существует");
-        }
-    }
 
     static public void removeClient(int id) {// удаляем получателя
         objectOutputStreams.remove(id);
     }
 
-    private void writeToPair(int id){
-        ServerPrivateMessage.getPrivateTalk()
+    private int getPair(int id) throws NullPointerException {
+        int a = ServerPrivateMessage.getPair(id);
+        if (a == -1) {
+            System.out.println("Приватного диалога не существует");
+            throw new NullPointerException();
+        }
+        return a;
     }
-    @Override
-    public void run() {
 
-        System.out.println("Writer запущен");
-        while (true) {
-
-            if (ServerPrivateMessage.getMessages().size() > 0) {
-                try {
-                    final Message message = ServerPrivateMessage.getMessages().takeFirst();
-                    System.out.println("message::  " + message + "  " + message.getId());//// TODO: 14.12.2019
-                    System.out.println("Deque " + ServerPrivateMessage.getMessages());//// TODO: 14.12.2019
-                    objectOutputStreams.entrySet().stream().peek(s ->
-                            System.out.println("Do filtra " + s + " " + s.getKey())
-                    )
-                            .filter(s -> !s.getKey().equals(message.getId()))// убираем отправителя из получателей
-                            .peek(s ->
-                                    System.out.println("Posle filtra " + s + " " + s.getKey())
-                            ).forEach(s -> {
+    private void sendMessage() throws InterruptedException, IOException {
+        final Message message = ServerPrivateMessage.getMessages().takeFirst();
+        if (message.getPrivatePair() != -1) {
+            int pairId = getPair(message.getPrivatePair());
+            objectOutputStreams.get(pairId).writeObject(message);
+        } else
+            objectOutputStreams.entrySet().stream()
+                    .filter(s -> !s.getKey().equals(message.getId()))// убираем отправителя из получателей
+                    .forEach(s -> {
                         try {
                             s.getValue().writeObject(message);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     });
-                    objectOutputStreams.entrySet().stream()
-                            .filter(s -> s.getKey() != message.getId())// убираем отправителя из получателей
-                            .forEach(System.out::println);
+    }
 
-                } catch (InterruptedException e) {
+    @Override
+    public void run() {
+
+        System.out.println("Writer запущен");
+        while (true) {
+            if (ServerPrivateMessage.getMessages().size() > 0) {
+                try {
+                    sendMessage();
+                } catch (InterruptedException | IOException e) {
                     e.printStackTrace();
                 }
 
