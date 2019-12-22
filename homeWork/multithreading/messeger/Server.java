@@ -1,6 +1,8 @@
 package multithreading.messeger;
 
 
+import multithreading.messeger.V2.ServerPrivateMessage;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -98,15 +100,15 @@ class ReaderThreadServer implements Runnable {
                 }
                 if ("".equals(inputMessage.getText()) || inputMessage.getText() == null)// не пропускаем пустые сообщения
                     continue;
-                if (!Server.getClientSockets().containsKey(inputMessage.getId())) {// не пропускает незарегистрированных пользователей
+                if (!ServerPrivateMessage.getClientSockets().containsKey(inputMessage.getId())) {// не пропускает незарегистрированных пользователей
                     continue;
                 }
-                Server.addMessage(inputMessage);//добавляем в очередь
+                ServerPrivateMessage.addMessage(inputMessage);//добавляем в очередь
                 System.out.println(inputMessage);
             }
         } catch (Exception e) {// ловим socketException
             System.out.println(name + " покинул чат");
-            Server.removeClient(id);
+            ServerPrivateMessage.removeClient(id);
             try {
                 in.close();
             } catch (IOException ex) {
@@ -123,11 +125,11 @@ class WriterThreadServer extends Thread {
 
     static public void addClient(Socket socket) throws IOException {
         ObjectOutputStream ous = new ObjectOutputStream(socket.getOutputStream());
-        int id = Server.getId();
+        int id = ServerPrivateMessage.getId();
         ous.writeInt(id);// отправляем id при подключении нового пользователя
         ous.flush();
         objectOutputStreams.put(id, ous);// регистрируем нового получателя
-        Server.addClient(id, socket);
+        ServerPrivateMessage.addClient(id, socket);
     }
 
     static public void removeClient(int id) {// удаляем получателя
@@ -140,11 +142,11 @@ class WriterThreadServer extends Thread {
         System.out.println("Writer запущен");
         while (true) {
 
-            if (Server.getMessages().size() > 0) {
+            if (ServerPrivateMessage.getMessages().size() > 0) {
                 try {
-                    final Message message = Server.getMessages().takeFirst();
+                    final Message message = ServerPrivateMessage.getMessages().takeFirst();
                     System.out.println("message::  " + message + "  " + message.getId());//// TODO: 14.12.2019
-                    System.out.println("Deque " + Server.getMessages());//// TODO: 14.12.2019
+                    System.out.println("Deque " + ServerPrivateMessage.getMessages());//// TODO: 14.12.2019
                     objectOutputStreams.entrySet().stream().peek(s ->
                             System.out.println("Do filtra " + s + " " + s.getKey())
                     )
@@ -158,9 +160,6 @@ class WriterThreadServer extends Thread {
                             e.printStackTrace();
                         }
                     });
-                    objectOutputStreams.entrySet().stream()
-                            .filter(s -> s.getKey() != message.getId())// убираем отправителя из получателей
-                            .forEach(System.out::println);
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();

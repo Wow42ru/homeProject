@@ -19,7 +19,7 @@ public class ServerPrivateMessage {
     private static ArrayList<Integer> privateTalk;// TODO: 19.12.2019 добавить семофор в метод // хранит приватные диалоги (клиентов)
     private static int counter = 0;// для назначения id
 
-    public static int getPair(int id) {
+ /*   public static int getPair(int id) {
         try {
             if (id % 2 == 0)
                 return privateTalk.get(id + 1);
@@ -27,9 +27,9 @@ public class ServerPrivateMessage {
         } catch (NullPointerException e) {
         }
         return -1;// на случай отсутствия пары
-    }
+    }*/
 
-    public static void addPair(int a, int b) {
+  /*  public static void addPair(int a, int b) {
         if (a < b) {// упорядочиваем по id
             privateTalk.add(a);
             privateTalk.add(b);
@@ -37,9 +37,9 @@ public class ServerPrivateMessage {
             privateTalk.add(b);
             privateTalk.add(a);
         }
-    }
+    }*/
 
-    public static void deletePair(int id) {
+ /*   public static void deletePair(int id) {
         int a = -1;// для проверки
         for (int i = 0; i < privateTalk.size(); i++) {
             if (privateTalk.get(i).equals(id)) {
@@ -57,7 +57,7 @@ public class ServerPrivateMessage {
             privateTalk.remove(a);
         } else System.out.println("Пары не существует");
     }
-
+*/
 
     public static int getId() {
         return counter++;// генерируем новый id
@@ -134,14 +134,14 @@ class ReaderThreadServer2 implements Runnable {
             e.printStackTrace();
         }
         try {
-            while (work) {
+            while (true) {
                 inputMessage = (Message) in.readObject();
                 if (newClient) {
                     id = inputMessage.getId();
                     name = inputMessage.getClient();
                     newClient = false;
                 }
-                if ("".equals(inputMessage.getText()) || inputMessage.getText() == null)// не пропускаем пустые сообщения
+                if (inputMessage == null || "".equals(inputMessage.getText()) || inputMessage.getText() == null)// не пропускаем пустые сообщения
                     continue;
                 if (!ServerPrivateMessage.getClientSockets().containsKey(inputMessage.getId())) {// не пропускает незарегистрированных пользователей
                     continue;
@@ -153,12 +153,10 @@ class ReaderThreadServer2 implements Runnable {
             System.out.println(name + " покинул чат");
             ServerPrivateMessage.removeClient(id);
             try {
-                in.close();
+                in.close();// закрываем вход.поток
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            work = false;// при ошибке соединения удаляет пользователя и  поток прекращает работу. Не понимаю, почему work подчеркнут
-
         }
     }
 }
@@ -181,20 +179,21 @@ class WriterThreadServer2 extends Thread {
         objectOutputStreams.remove(id);
     }
 
-    private int getPair(int id) throws NullPointerException {
+   /* private int getPair(int id) throws NullPointerException {
         int a = ServerPrivateMessage.getPair(id);
         if (a == -1) {
             System.out.println("Приватного диалога не существует");
             throw new NullPointerException();
         }
         return a;
-    }
+    }*/
 
     private void sendMessage() throws InterruptedException, IOException {
         final Message message = ServerPrivateMessage.getMessages().takeFirst();
         if (message.getPrivatePair() != -1) {
-            int pairId = getPair(message.getPrivatePair());
+            int pairId = message.getPrivatePair();
             objectOutputStreams.get(pairId).writeObject(message);
+            System.out.println("Отправленно личное сообщение пользователю c id " + pairId);
         } else
             objectOutputStreams.entrySet().stream()
                     .filter(s -> !s.getKey().equals(message.getId()))// убираем отправителя из получателей

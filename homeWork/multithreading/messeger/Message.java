@@ -7,13 +7,18 @@ public class Message implements Serializable,AutoCloseable {
     private String clientName;
     private String text;
     private final int id;
+    private  final int privatePair;
     private LocalDateTime localDateTime;
-    public Message(String clientName, String text,int id) {
+    public Message(String clientName, String text,int id,int privatePair) {
         this.clientName = clientName;
         this.text = text;
         this.id = id;
         localDateTime=LocalDateTime.now();
+        this.privatePair = privatePair;
+    }
 
+    public int getPrivatePair() {
+        return privatePair;
     }
 
     public int getId() {
@@ -22,7 +27,7 @@ public class Message implements Serializable,AutoCloseable {
 
     @Override
     public String toString() {
-        return  clientName +": \""+ text+"\" [Отправленно в " +  localDateTime.getHour()+":"+localDateTime.getMinute()+":"+localDateTime.getSecond()+"]";//// TODO: 14.12.2019 исправить отображение времени (меньше 10 минут)
+        return  clientName +" (id:"+ id+"): \""+ text+"\" [Отправленно в " +  localDateTime.getHour()+":"+localDateTime.getMinute()+":"+localDateTime.getSecond()+"] отправителю: " + privatePair;//// TODO: 14.12.2019 исправить отображение времени (меньше 10 минут)
     }
 
     public String getClient() {
